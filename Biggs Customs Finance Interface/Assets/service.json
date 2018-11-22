@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "biggs-custom-kicks-website",
+  "private_key_id": "34b8ae73a48d5431467dde56472f8b6520382b8e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDQQrP2CFqgDYON\nHGB1PKAKPb4jkir7W4Oe2vkCe5KOvhsfCLNSrGLFWil664EiHrYC9Y02K7BYh1Nu\n+WaUw/1ZkBcfVJCIzj7N80+SwvWaFd/IOpJPrc9qFzDcggVfW3TPr2NvKkEsU9qF\ngHe7qG8BUHeYS5GJcGu3znmxaFhrcei3RkVFvYLY4xYcrOSH4sNehqRZ9PqyaliP\n2+poIVswyF+ik7fQGm53S6TGIxDxVp87DrhMOwr6a9PMDGCWy3JPrtsi3aK/h9rU\nevZIAnxfxAjirGpVQ+WZf4CahfTaOLmYoJO/H6ehqH64ELcMf7BCazZFWwcTti9h\nGpoZKyxPAgMBAAECggEAStlOWISUHaX9u7+RI1GQq12Zcqtb607utS86A5xqBgdp\nM/QqjvIJ5agL9HOjy6GCBPo/sFJvZMHuSJo2Ng1ihsf0p3v7HlAR3m8uEC8lmiV2\ncj4qy5xKSXTgSMAqMiVqjCIa+J8VIVtZ1FVhsv5MNwq2kPPH8L+I11zL++jmrmZx\n08cWs6DzQ3qweQ/THk9NVt4kcUZX3rcyestAv5HYE9AhycUuh6Xi962h66zKJaid\nT3DV3eMQB7mJyoMDX5a1u7k8+zGw+KqMy8mBToqPdeBGs0RdLoTBcrZ5xrbWt3Ka\nLu3cq2vXm1xv2Zz+60Bdo8vyiFYShLibonucZnsVEQKBgQD1uZMslgG6ctMzbMrB\n7EI2elftvw7KY8RebfBFjTAX4xzl1vVe8EEnZ0SBPDGTAoomcSZOT+Lup/huI7ve\nNXwYF7ubCVhP03Dw1wryWppnRY6sO+Cd8q1iFieW95zkGcXl9IpnieWAl3m+62cq\nR8v256DzkX+46LpK0T0/9ZtLgwKBgQDY+BTYAp8flQ7+qmb907RsC2Fj8cvaN1AJ\nXtTNlPxEC9NH8+5ACpn40Cg/wui2RV67Qr5s01DZ7Yd81DF9zwnz3+zlO687SjeX\nTDXQD8vg11jwiQazmFK8uzsVbI9+BZ+9bjib4VDQNT5jC8Gmlu5cjnE+KAku914N\n9asmr45GRQKBgQC7ua6qXV+spZScsPyl8m0TWZxbUZ9nF5kp2yu4twiK90NYhESo\n5zufctFvOiFVgpcwjzkIkxd35HNzEXGxbYMElP0KkLUbJxodpOwEAxv60bUR+By+\nDmxPh0VvnHQL/3SlHZGvUDY5a3/jT8xdDMTSOFtKOVouVf4csoXsmyKtKQKBgCvy\n3G4A4fCIxffJ1oDV0DcOexS+lrdF+v1a6yoVYp/58Tsi6wCn5RZkO7LmrTK2jIDL\n/TyX9UmfdpFPfhLozDBNDHRGibEt0GLiOghCGt8ZX9ehOe1JDoFSP56QVeSGCRxa\n5jaVBkSWdGOlrv0ql2/CHqgjffC4hKG5QIjeiKgtAoGBAKYSNFMfOFkUHien6K1Q\n2swZc+BSaIjDFdSlYLzRC/vlM4gE3XQLogV316/gcV7XoYhFXF3f/8FMSkoOwy2m\nChh9u3r82DJGPMjOk8DjaaSHq3GfYgFpAYF0sOXW9zvblrD4nee3ycq0eDkIcSYz\nTXEzpYWJN0X24Iha8VsnGAZ6\n-----END PRIVATE KEY-----\n",
+  "client_email": "sheets@biggs-custom-kicks-website.iam.gserviceaccount.com",
+  "client_id": "111525904385648468600",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sheets%40biggs-custom-kicks-website.iam.gserviceaccount.com"
+}
