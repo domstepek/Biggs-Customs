@@ -8,24 +8,24 @@
         Title="Biggs Customs Finance Interface" Height="450" Width="619.801" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <TabControl x:Name="tabControl" Margin="0,46,0,0" SelectionChanged="tabControl_SelectionChanged">
-            <TabItem Header="Shoes" Name="shoesTabItem">
+            <TabItem Header="Product" Name="productTabItem">
                 <Grid>
-                    <ListView x:Name="allShoesListView" VerticalAlignment="Bottom" Height="204"/>
-                    <GroupBox x:Name="addNewShoeGroupBox" Header="Add New Shoe:" Height="122" VerticalAlignment="Top" >
+                    <ListView x:Name="allProductsListView" VerticalAlignment="Bottom" Height="204"/>
+                    <GroupBox x:Name="addNewProductGroupBox" Header="Add New Product:" Height="122" VerticalAlignment="Top" >
                         <Grid>
-                            <Label x:Name="addNewShoeNameLabel" Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
-                            <TextBox x:Name="addNewShoeNameTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="82,13,0,0" KeyboardNavigation.TabIndex="0" SpellCheck.IsEnabled="True"/>
-                            <Label x:Name="addNewShoeBrandLabel" Content="Brand:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0"/>
-                            <ComboBox x:Name="addNewShoeBrandCombobox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="194" Margin="82,41,0,0" SelectionChanged="addNewShoeComboboxes_SelectionChanged" KeyboardNavigation.TabIndex="1"/>
-                            <Label x:Name="addNewShoeTypeLabel" Content="Shoe Type:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,67,0,0"/>
-                            <ComboBox x:Name="addNewShoeTypeCombobox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="194" Margin="82,68,0,0" SelectionChanged="addNewShoeComboboxes_SelectionChanged" KeyboardNavigation.TabIndex="2"/>
-                            <Label x:Name="addNewShoeCostLabel" Content="Shoe Cost:" HorizontalAlignment="Left" Margin="299,10,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="addNewShoeCostTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="370,13,0,0" PreviewTextInput="addNewShoeCostTextbox_PreviewTextInput" Text="0.00" KeyboardNavigation.TabIndex="3"/>
-                            <Button x:Name="addNewShoeButton" Content="Add Shoe" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="489,70,0,0" Click="addNewShoeButton_Click"/>
-                            <Label x:Name="addNewShoeKeywordsLabel" Content="Keywords:" HorizontalAlignment="Left" Margin="299,38,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="addNewShoeKeywordsTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="194" Margin="370,41,0,0" KeyboardNavigation.TabIndex="4" SpellCheck.IsEnabled="True"/>
-                            <Label x:Name="addNewShoeSKULabel" Content="SKU:" HorizontalAlignment="Left" Margin="299,65,0,0" VerticalAlignment="Top"/>
-                            <TextBox x:Name="addNewShoeSKUTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="114" Margin="370,68,0,0" IsEnabled="False" KeyboardNavigation.TabIndex="5"/>
+                            <Label x:Name="addNewProductNameLabel" Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"/>
+                            <TextBox x:Name="addNewProductNameTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="179" Margin="97,13,0,0" KeyboardNavigation.TabIndex="0" SpellCheck.IsEnabled="True"/>
+                            <Label x:Name="addNewProductBrandLabel" Content="Brand:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0"/>
+                            <ComboBox x:Name="addNewProductBrandCombobox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="179" Margin="97,41,0,0" SelectionChanged="addNewProductComboboxes_SelectionChanged" KeyboardNavigation.TabIndex="1"/>
+                            <Label x:Name="addNewProductTypeLabel" Content="Product Type:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,67,0,0"/>
+                            <ComboBox x:Name="addNewProductTypeCombobox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="179" Margin="97,68,0,0" SelectionChanged="addNewProductComboboxes_SelectionChanged" KeyboardNavigation.TabIndex="2"/>
+                            <Label x:Name="addNewProductCostLabel" Content="Product Cost:" HorizontalAlignment="Left" Margin="299,10,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="addNewProductCostTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="179" Margin="385,13,0,0" PreviewTextInput="addNewProductCostTextbox_PreviewTextInput" Text="0.00" KeyboardNavigation.TabIndex="3"/>
+                            <Button x:Name="addNewProductButton" Content="Add Product" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="489,70,0,0" Click="addNewProductButton_Click"/>
+                            <Label x:Name="addNewProductKeywordsLabel" Content="Keywords:" HorizontalAlignment="Left" Margin="299,38,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="addNewProductKeywordsTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="179" Margin="385,41,0,0" KeyboardNavigation.TabIndex="4" SpellCheck.IsEnabled="True"/>
+                            <Label x:Name="addNewProductSKULabel" Content="SKU:" HorizontalAlignment="Left" Margin="299,65,0,0" VerticalAlignment="Top"/>
+                            <TextBox x:Name="addNewProductSKUTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" VerticalAlignment="Top" Width="99" Margin="385,68,0,0" IsEnabled="False" KeyboardNavigation.TabIndex="5"/>
                         </Grid>
                     </GroupBox>
 
@@ -43,40 +43,40 @@
 
                 </Grid>
             </TabItem>
-            <TabItem Header="Shoes in Progress" Name="shoesInProgressTabItem">
+            <TabItem Header="Projects" Name="projectsTabItem">
                 <Grid>
-                    <GroupBox x:Name="shoeInProgressGroupBox" Header="Add/Edit Shoes In Progress" VerticalAlignment="Top" Height="150">
+                    <GroupBox x:Name="projectsGroupBox" Header="Add/Edit Projects" VerticalAlignment="Top" Height="173">
                         <Grid>
-                            <Label x:Name="shoeInProgressShoeLabel" Content="Shoe:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="324,6,0,0" Height="26" Width="39"/>
-                            <ComboBox x:Name="shoeInProgressShoeCombobox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="196" Grid.Column="0" Height="22" Margin="368,8,0,0">
+                            <Label x:Name="projectsProductLabel" Content="Product:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,123,0,0" Height="26"/>
+                            <ComboBox x:Name="projectsProductCombobox" HorizontalAlignment="Left" VerticalAlignment="Top" Width="178" Grid.Column="0" Height="22" Margin="141,125,0,0">
                                 <ComboBox.ItemTemplate>
                                     <DataTemplate>
                                         <TextBlock Text="{Binding Name}"/>
                                     </DataTemplate>
                                 </ComboBox.ItemTemplate>
                             </ComboBox>
-                            <Label x:Name="shoeInProgressStartDateLabel" Content="Start Date:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="324,37,0,0"/>
-                            <DatePicker x:Name="shoeInProgressStartDateDatePicker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="394,38,0,0" Width="170" IsTodayHighlighted="False"/>
-                            <Label x:Name="shoeInProgressEndDateLabel" Content="End Date:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="324,65,0,0"/>
-                            <DatePicker x:Name="shoeInProgressEndDateDatePicker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="394,67,0,0" Width="170" IsTodayHighlighted="False"/>
-                            <Label x:Name="shoeInProgressCustomerFirstNameLabel" Content="Customer/First Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,5,0,0"/>
-                            <TextBox x:Name="shoeInProgressCustomerFirstNameTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,8,0,0"/>
-                            <Label x:Name="shoeInProgressCustomerLastNameLabel" Content="Customer/Last Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0"/>
-                            <TextBox x:Name="shoeInProgressCustomerLastNameTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,39,0,0"/>
-                            <Label x:Name="shoeInProgressPhoneNumberLabel" Content="Phone Number:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,64,0,0"/>
-                            <TextBox x:Name="shoeInProgressPhoneNumberTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,67,0,0"/>
-                            <Label x:Name="shoeInProgressInstagramLabel" Content="Instagram:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,92,0,0"/>
-                            <TextBox x:Name="shoeInProgressInstagramTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,95,0,0"/>
-                            <Button x:Name="shoeInProgressAddUpdateButton" Content="Add/Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="105" Margin="459,98,0,0"/>
+                            <Label x:Name="projectsStartDateLabel" Content="Start Date:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="329,36,0,0"/>
+                            <DatePicker x:Name="projectsStartDateDatePicker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,36,0,0" Width="170" IsTodayHighlighted="True" SelectedDateFormat="Short" Text="dsgg"/>
+                            <Label x:Name="projectsEndDateLabel" Content="End Date:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="329,65,0,0"/>
+                            <DatePicker x:Name="projectsEndDateDatePicker" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="414,65,0,0" Width="170" IsTodayHighlighted="True"/>
+                            <Label x:Name="projectsCustomerFirstNameLabel" Content="Customer/First Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,5,0,0"/>
+                            <TextBox x:Name="projectsCustomerFirstNameTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,8,0,0"/>
+                            <Label x:Name="projectsCustomerLastNameLabel" Content="Customer/Last Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,36,0,0"/>
+                            <TextBox x:Name="projectsCustomerLastNameTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,39,0,0"/>
+                            <Label x:Name="projectsPhoneNumberLabel" Content="Phone Number:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,64,0,0"/>
+                            <TextBox x:Name="projectsPhoneNumberTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,67,0,0"/>
+                            <Label x:Name="projectsInstagramLabel" Content="Instagram:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,92,0,0"/>
+                            <TextBox x:Name="projectsInstagramTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="178" Margin="141,95,0,0"/>
+                            <Button x:Name="projectsAddUpdateButton" Content="Add/Update" HorizontalAlignment="Left" VerticalAlignment="Top" Width="83" Margin="501,126,0,0" Click="projectsAddUpdateButton_Click"/>
+                            <Label x:Name="projectsCustomerOrderNumberLabel" Content="Order #:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="329,92,0,0"/>
+                            <TextBox x:Name="projectsCustomerOrderNumberTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="170" Margin="414,94,0,0" IsEnabled="False"/>
+                            <Label x:Name="projectsCustomerCustomCostLabel" Content="Custom Cost:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="329,5,0,0"/>
+                            <TextBox x:Name="projectsCustomerCustomCostTextbox" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="0.00" VerticalAlignment="Top" Width="170" Margin="414,8,0,0" PreviewTextInput="addNewProductCostTextbox_PreviewTextInput"/>
+                            <Button x:Name="projectsCompletedButton" Content="Complete" HorizontalAlignment="Left" Margin="414,126,0,0" VerticalAlignment="Top" Width="82" Click="projectsCompletedButton_Click"/>
+                            <Button x:Name="projectsAddImageButton" Content="Add Image" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="334,126,0,0"/>
                         </Grid>
                     </GroupBox>
-                    <ListView x:Name="listView" Height="181" VerticalAlignment="Bottom">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn/>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
+                    <ListView x:Name="allProjectsListView" Height="149" VerticalAlignment="Bottom" SelectionChanged="allProjectsListView_SelectionChanged"/>
                 </Grid>
             </TabItem>
         </TabControl>

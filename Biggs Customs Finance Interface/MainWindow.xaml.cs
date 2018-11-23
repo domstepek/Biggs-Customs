@@ -18,10 +18,11 @@ namespace Biggs_Customs_Finance_Interface
 {
     public partial class MainWindow : Window
     {
+        ObservableCollection<Project> AllProjects = new ObservableCollection<Project>();
         ObservableCollection<Order> AllOrders = new ObservableCollection<Order>();
-        ObservableCollection<Shoe> AllShoes = new ObservableCollection<Shoe>();
+        ObservableCollection<Product> AllProducts = new ObservableCollection<Product>();
         ObservableCollection<string> Brands = new ObservableCollection<string>();
-        ObservableCollection<string> ShoeTypes = new ObservableCollection<string>();
+        ObservableCollection<string> ProductTypes = new ObservableCollection<string>();
 
         private readonly string app_name = "Biggs Customs Finance Interface";
         private readonly string service_email = "sheets@biggs-custom-kicks-website.iam.gserviceaccount.com";
@@ -34,31 +35,36 @@ namespace Biggs_Customs_Finance_Interface
         {
             InitializeComponent();
             DataContext = this;
-            AllShoes.CollectionChanged += AllShoes_CollectionChanged;
-            allShoesListView.ItemsSource = AllShoes;
+
+            AllProducts.CollectionChanged += AllProducts_CollectionChanged;
+            allProductsListView.ItemsSource = AllProducts;
             allOrdersListView.ItemsSource = AllOrders;
-            addNewShoeBrandCombobox.ItemsSource = Brands;
-            addNewShoeTypeCombobox.ItemsSource = ShoeTypes;
-            shoeInProgressShoeCombobox.ItemsSource = AllShoes;
+            allProjectsListView.ItemsSource = AllProjects;
+
+            addNewProductBrandCombobox.ItemsSource = Brands;
+            addNewProductTypeCombobox.ItemsSource = ProductTypes;
+            projectsProductCombobox.ItemsSource = AllProducts;
 
             Brands.Add("< Create New > ");
-            ShoeTypes.Add("< Create New > ");
+            ProductTypes.Add("< Create New > ");
 
             #region "List View Columns"
-            var allShoesGridView = new GridView();
+            var allProductsGridView = new GridView();
             var allOrdersGridView = new GridView();
-            allShoesListView.View = allShoesGridView;
+            var allProjectsGridView = new GridView();
+            allProductsListView.View = allProductsGridView;
             allOrdersListView.View = allOrdersGridView;
+            allProjectsListView.View = allProjectsGridView;
 
-            allShoesGridView.Columns.Add(new GridViewColumn() { Header = "SKU", DisplayMemberBinding = new Binding("SKU") });
-            allShoesGridView.Columns.Add(new GridViewColumn() { Header = "Name", DisplayMemberBinding = new Binding("Name") });
-            allShoesGridView.Columns.Add(new GridViewColumn() { Header = "Brand", DisplayMemberBinding = new Binding("Brand") });
-            allShoesGridView.Columns.Add(new GridViewColumn() { Header = "Shoe Type", DisplayMemberBinding = new Binding("ShoeType") });
-            allShoesGridView.Columns.Add(new GridViewColumn() { Header = "Cost", DisplayMemberBinding = new Binding("Cost") });
-            allShoesGridView.Columns.Add(new GridViewColumn() { Header = "Keywords", DisplayMemberBinding = new Binding("Keywords") });
+            allProductsGridView.Columns.Add(new GridViewColumn() { Header = "SKU", DisplayMemberBinding = new Binding("SKU") });
+            allProductsGridView.Columns.Add(new GridViewColumn() { Header = "Name", DisplayMemberBinding = new Binding("Name") });
+            allProductsGridView.Columns.Add(new GridViewColumn() { Header = "Brand", DisplayMemberBinding = new Binding("Brand") });
+            allProductsGridView.Columns.Add(new GridViewColumn() { Header = "Product Type", DisplayMemberBinding = new Binding("ProductType") });
+            allProductsGridView.Columns.Add(new GridViewColumn() { Header = "Cost", DisplayMemberBinding = new Binding("Cost") });
+            allProductsGridView.Columns.Add(new GridViewColumn() { Header = "Keywords", DisplayMemberBinding = new Binding("Keywords") });
             
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Order Number", DisplayMemberBinding = new Binding("OrderNumber") });
-            allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Shoe SKU", DisplayMemberBinding = new Binding("ShoeSKU") });
+            allOrdersGridView.Columns.Add(new GridViewColumn { Header = "SKU", DisplayMemberBinding = new Binding("SKU") });
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Start Date", DisplayMemberBinding = new Binding("StartDate") });
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "End Date", DisplayMemberBinding = new Binding("EndDate") });
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Selling Date", DisplayMemberBinding = new Binding("SellingDate") });
@@ -68,10 +74,21 @@ namespace Biggs_Customs_Finance_Interface
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Customer/Last Name", DisplayMemberBinding = new Binding("CustomerLastName") });
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Phone Number", DisplayMemberBinding = new Binding("PhoneNumber") });
             allOrdersGridView.Columns.Add(new GridViewColumn { Header = "Instagram", DisplayMemberBinding = new Binding("Instagram") });
+
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "SKU", DisplayMemberBinding = new Binding("Product.SKU") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Order #", DisplayMemberBinding = new Binding("OrderNumber") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Start Date", DisplayMemberBinding = new Binding("StartDate") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "End Date", DisplayMemberBinding = new Binding("EndDate") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Custom Cost", DisplayMemberBinding = new Binding("CustomCost") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Total Income", DisplayMemberBinding = new Binding("TotalIncome") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Customer/First Name", DisplayMemberBinding = new Binding("CustomerFirstName") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Customer/Last Name", DisplayMemberBinding = new Binding("CustomerLastName") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Phone Number", DisplayMemberBinding = new Binding("PhoneNumber") });
+            allProjectsGridView.Columns.Add(new GridViewColumn { Header = "Instagram", DisplayMemberBinding = new Binding("Instagram") });
             #endregion
 
             serviceLogin();
-            GetShoes();
+            GetProducts();
         }
 
         private void serviceLogin()
@@ -97,14 +114,14 @@ namespace Biggs_Customs_Finance_Interface
             });
         }
 
-        private async void GetShoes()
+        private async void GetProducts()
         {
-            var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Shoes!A2:F");
+            var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Products!A2:F");
             var values = (await request.ExecuteAsync()).Values;
 
             foreach (var row in values)
             {
-                AllShoes.Add(new Shoe(
+                AllProducts.Add(new Product(
                     int.Parse((string)row[0]),
                     (string)row[1],
                     (string)row[2],
@@ -114,62 +131,62 @@ namespace Biggs_Customs_Finance_Interface
             }
         }
 
-        private void AllShoes_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void AllProducts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             var values = new List<IList<object>>();
 
             foreach (var obj in e.NewItems)
             {
-                var shoe = (Shoe)obj;
-                if (!Brands.Contains(shoe.Brand))
-                    Brands.Add(shoe.Brand);
-                if (!ShoeTypes.Contains(shoe.ShoeType))
-                    ShoeTypes.Add(shoe.ShoeType);
-                values.Add(new List<object> { shoe.SKU, shoe.Name, shoe.Brand, shoe.ShoeType, shoe.Cost, shoe.Keywords });
+                var product = (Product)obj;
+                if (!Brands.Contains(product.Brand))
+                    Brands.Add(product.Brand);
+                if (!ProductTypes.Contains(product.ProductType))
+                    ProductTypes.Add(product.ProductType);
+                values.Add(new List<object> { product.SKU, product.Name, product.Brand, product.ProductType, product.Cost, product.Keywords });
             }
             
-            addNewShoeSKUTextbox.Text = (AllShoes.Count + 2).ToString();
+            addNewProductSKUTextbox.Text = (AllProducts.Count + 2).ToString();
         }
 
-        private void addNewShoeCostTextbox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void addNewProductCostTextbox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             if (!Regex.IsMatch(e.Text, $"^[0-9.-]+$", RegexOptions.Multiline)) {
                 e.Handled = true;
             }
         }
 
-        private async void addNewShoeButton_Click(object sender, RoutedEventArgs e)
+        private async void addNewProductButton_Click(object sender, RoutedEventArgs e)
         {
-            var shoe = new Shoe(
-                int.Parse(addNewShoeSKUTextbox.Text),
-                addNewShoeNameTextbox.Text,
-                addNewShoeBrandCombobox.Text,
-                addNewShoeTypeCombobox.Text,
-                decimal.Parse(addNewShoeCostTextbox.Text),
-                addNewShoeKeywordsTextbox.Text);
-            AllShoes.Add(shoe);
+            var product = new Product(
+                int.Parse(addNewProductSKUTextbox.Text),
+                addNewProductNameTextbox.Text,
+                addNewProductBrandCombobox.Text,
+                addNewProductTypeCombobox.Text,
+                decimal.Parse(addNewProductCostTextbox.Text),
+                addNewProductKeywordsTextbox.Text);
+            AllProducts.Add(product);
 
             var values = new List<IList<object>>();
-            values.Add(new List<object> { shoe.SKU, shoe.Name, shoe.Brand, shoe.ShoeType, shoe.Cost, shoe.Keywords });
+            values.Add(new List<object> { product.SKU, product.Name, product.Brand, product.ProductType, product.Cost, product.Keywords });
 
             var body = new Google.Apis.Sheets.v4.Data.ValueRange()
             {
                 Values = values
             };
 
-            var request = sheets_service.Spreadsheets.Values.Append(body, sheets_id, "Shoes");
+            var request = sheets_service.Spreadsheets.Values.Append(body, sheets_id, "Products");
             request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
             request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
             await request.ExecuteAsync();
 
-            addNewShoeNameTextbox.Text = "";
-            addNewShoeBrandCombobox.Text = "";
-            addNewShoeTypeCombobox.Text = "";
-            addNewShoeCostTextbox.Text = "0.00";
-            addNewShoeKeywordsTextbox.Text = "";
+            addNewProductNameTextbox.Text = "";
+            addNewProductBrandCombobox.Text = "";
+            addNewProductTypeCombobox.Text = "";
+            addNewProductCostTextbox.Text = "0.00";
+            addNewProductKeywordsTextbox.Text = "";
         }
 
-        private void addNewShoeComboboxes_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void addNewProductComboboxes_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var cb = (ComboBox)sender;
             var name = cb.Name;
@@ -182,9 +199,9 @@ namespace Biggs_Customs_Finance_Interface
                     {
                         Brands.Add(dialog.Answer);
                     }
-                    else if (name.Contains("ShoeType"))
+                    else if (name.Contains("ProductType"))
                     {
-                        ShoeTypes.Add(dialog.Answer);
+                        ProductTypes.Add(dialog.Answer);
                     }
                     cb.SelectedIndex = cb.Items.Count - 1;
                 }
@@ -194,19 +211,20 @@ namespace Biggs_Customs_Finance_Interface
                 }
             } else
             {
-                var brand = Brands.ElementAtOrDefault(addNewShoeBrandCombobox.SelectedIndex);
-                var shoetype = ShoeTypes.ElementAtOrDefault(addNewShoeTypeCombobox.SelectedIndex);
-                var shoe = AllShoes.FirstOrDefault(x => x.Brand == brand && x.ShoeType == shoetype);
-                if (shoe != null)
+                var brand = Brands.ElementAtOrDefault(addNewProductBrandCombobox.SelectedIndex);
+                var shoetype = ProductTypes.ElementAtOrDefault(addNewProductTypeCombobox.SelectedIndex);
+                var product = AllProducts.FirstOrDefault(x => x.Brand == brand && x.ProductType == shoetype);
+                if (product != null)
                 {
-                    addNewShoeCostTextbox.Text = shoe.Cost.ToString();
+                    addNewProductCostTextbox.Text = product.Cost.ToString();
                 }
             }
         }
 
         private async void tabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (shoesTabItem.IsSelected)
+            if (!(e.Source is TabControl)) return;
+            if (productTabItem.IsSelected)
             {
                 //do something eventually....
             }
@@ -234,10 +252,92 @@ namespace Biggs_Customs_Finance_Interface
                     });
                 }
             }
-            else if (shoesInProgressTabItem.IsSelected)
+            else if (projectsTabItem.IsSelected)
             {
-                
+                AllProjects.Clear();
+
+                var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Projects!A2:J");
+                var values = (await request.ExecuteAsync()).Values;
+
+                foreach (var row in values)
+                {
+                    AllProjects.Add(new Project
+                    {
+                        Product = AllProducts.FirstOrDefault(x => x.SKU == int.Parse((string)row[0])),
+                        OrderNumber = int.Parse((string)row[1]),
+                        StartDate = DateTime.Parse((string)row[2]),
+                        EndDate = DateTime.Parse((string)row[3]),
+                        CustomCost = decimal.Parse((string)row[4], NumberStyles.Currency),
+                        TotalIncome = decimal.Parse((string)row[5], NumberStyles.Currency),
+                        CustomerFirstName = (string)row[6],
+                        CustomerLastName = (string)row[7],
+                        PhoneNumber = (string)row[8],
+                        Instagram = (string)row[9]
+                    });
+                }
+
+                projectsCustomerOrderNumberTextbox.Text = (AllProducts.Count + 2).ToString();
             }
+        }
+
+        private void allProjectsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (allProjectsListView.SelectedIndex > -1)
+            {
+                var project = (Project)allProjectsListView.SelectedItem;
+                projectsCustomerFirstNameTextbox.Text = project.CustomerFirstName;
+                projectsCustomerLastNameTextbox.Text = project.CustomerLastName;
+                projectsPhoneNumberTextbox.Text = project.PhoneNumber;
+                projectsInstagramTextbox.Text = project.Instagram;
+                projectsProductCombobox.SelectedItem = project.Product;
+                projectsStartDateDatePicker.Text = project.StartDate.ToShortDateString();
+                projectsEndDateDatePicker.Text = project.EndDate.ToShortDateString();
+                projectsCustomerOrderNumberTextbox.Text = project.OrderNumber.ToString();
+            } else
+            {
+                projectsCustomerFirstNameTextbox.Text = "";
+                projectsCustomerLastNameTextbox.Text = "";
+                projectsPhoneNumberTextbox.Text = "";
+                projectsInstagramTextbox.Text = "";
+                projectsProductCombobox.Text = "";
+                projectsStartDateDatePicker.Text = "";
+                projectsEndDateDatePicker.Text = "";
+                projectsCustomerOrderNumberTextbox.Text = (AllProjects[AllProjects.Count - 1].OrderNumber + 1).ToString();
+            }
+        }
+
+        private void projectsAddUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            var product = (Product)projectsProductCombobox.SelectedItem;
+            var customCost = decimal.Parse(projectsCustomerCustomCostTextbox.Text, NumberStyles.Currency);
+            var index = allProjectsListView.SelectedIndex;
+            var project = new Project
+            {
+                Product = product,
+                OrderNumber = int.Parse(projectsCustomerOrderNumberTextbox.Text),
+                StartDate = projectsStartDateDatePicker.SelectedDate ?? DateTime.Now,
+                EndDate = projectsEndDateDatePicker.SelectedDate ?? DateTime.Now,
+                CustomCost = customCost,
+                TotalIncome = product.Cost + customCost,
+                CustomerFirstName = projectsCustomerFirstNameTextbox.Text,
+                CustomerLastName = projectsCustomerLastNameTextbox.Text,
+                PhoneNumber = projectsPhoneNumberTextbox.Text,
+                Instagram = projectsInstagramTextbox.Text
+            };
+            if (index > -1)
+            {
+                AllProjects[index] = project;
+                allProjectsListView.SelectedIndex = index;
+            } else
+            {
+                AllProjects.Add(project);
+                allProjectsListView.SelectedIndex = AllProjects.Count - 1;
+            }
+        }
+
+        private void projectsCompletedButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

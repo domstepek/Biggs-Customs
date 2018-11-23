@@ -81,7 +81,7 @@
     </Compile>
     <Compile Include="Order.cs" />
     <Compile Include="Project.cs" />
-    <Compile Include="Shoe.cs" />
+    <Compile Include="Product.cs" />
     <Page Include="InputBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

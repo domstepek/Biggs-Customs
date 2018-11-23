@@ -8,7 +8,8 @@ namespace Biggs_Customs_Finance_Interface
 {
     class Project
     {
-        public Shoe Shoe { get; set; }
+        public Product Product { get; set; }
+        public int OrderNumber { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal CustomCost { get; set; }
