@@ -1,0 +1,23 @@
+{
+  "from": "Biggs Customs\n6937 Big Arrow Ct.\n(916) 342-9303\nbiggscustomkicks@gmail.com",
+  "to": "{customer_first} {customer_last}",
+  "logo": "https://static.wixstatic.com/media/cc2a72_df741b28c1c44ea3964e132fdb4b6c3d~mv2.png/v1/fill/w_80,h_80,al_c,q_80,usm_0.66_1.00_0.01/cc2a72_df741b28c1c44ea3964e132fdb4b6c3d~mv2.webp",
+  "purchase_order": "{order_number}",
+  "date": "{selling_date}",
+  "due_date": "{selling_date}",
+  "items": [
+    {
+      "name": "{product_sku}\t{product_name}",
+      "quantity": 1,
+      "unit_cost": "{total_income}"
+    }
+  ],
+  "fields": {
+    "tax": "7.5%",
+    "discounts": false,
+    "shipping": true
+  },
+  "tax": {tax},
+  "shipping" : 10,
+  "notes": "Thanks for your business!"
+}

@@ -13,6 +13,10 @@ using System.Globalization;
 using System.Linq;
 using System.Collections.Generic;
 using System;
+using Microsoft.Win32;
+using Google.Apis.Sheets.v4.Data;
+using System.Net.Http;
+using System.Net;
 
 namespace Biggs_Customs_Finance_Interface
 {
@@ -23,11 +27,12 @@ namespace Biggs_Customs_Finance_Interface
         ObservableCollection<Product> AllProducts = new ObservableCollection<Product>();
         ObservableCollection<string> Brands = new ObservableCollection<string>();
         ObservableCollection<string> ProductTypes = new ObservableCollection<string>();
-
+        
         private readonly string app_name = "Biggs Customs Finance Interface";
         private readonly string service_email = "sheets@biggs-custom-kicks-website.iam.gserviceaccount.com";
         private readonly string sheets_id = "1GraMbmwK8VDfgNYkQVLn1QlHHxmuDRI2UdvIaHPlcik";
         private readonly string[] scopes = { SheetsService.Scope.Spreadsheets };
+        private readonly int projects_id = 127709572;
 
         private SheetsService sheets_service;
 
@@ -47,7 +52,7 @@ namespace Biggs_Customs_Finance_Interface
 
             Brands.Add("< Create New > ");
             ProductTypes.Add("< Create New > ");
-
+            
             #region "List View Columns"
             var allProductsGridView = new GridView();
             var allOrdersGridView = new GridView();
@@ -88,7 +93,6 @@ namespace Biggs_Customs_Finance_Interface
             #endregion
 
             serviceLogin();
-            GetProducts();
         }
 
         private void serviceLogin()
@@ -114,25 +118,9 @@ namespace Biggs_Customs_Finance_Interface
             });
         }
 
-        private async void GetProducts()
-        {
-            var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Products!A2:F");
-            var values = (await request.ExecuteAsync()).Values;
-
-            foreach (var row in values)
-            {
-                AllProducts.Add(new Product(
-                    int.Parse((string)row[0]),
-                    (string)row[1],
-                    (string)row[2],
-                    (string)row[3],
-                    decimal.Parse((string)row[4], NumberStyles.Currency),
-                    (string)row[5]));
-            }
-        }
-
         private void AllProducts_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
+            if (e.NewItems == null) return;
             var values = new List<IList<object>>();
 
             foreach (var obj in e.NewItems)
@@ -169,7 +157,7 @@ namespace Biggs_Customs_Finance_Interface
             var values = new List<IList<object>>();
             values.Add(new List<object> { product.SKU, product.Name, product.Brand, product.ProductType, product.Cost, product.Keywords });
 
-            var body = new Google.Apis.Sheets.v4.Data.ValueRange()
+            var body = new ValueRange()
             {
                 Values = values
             };
@@ -226,7 +214,20 @@ namespace Biggs_Customs_Finance_Interface
             if (!(e.Source is TabControl)) return;
             if (productTabItem.IsSelected)
             {
-                //do something eventually....
+                AllProducts.Clear();
+                var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Products!A2:F");
+                var values = (await request.ExecuteAsync()).Values;
+
+                foreach (var row in values)
+                {
+                    AllProducts.Add(new Product(
+                        int.Parse((string)row[0]),
+                        (string)row[1],
+                        (string)row[2],
+                        (string)row[3],
+                        decimal.Parse((string)row[4], NumberStyles.Currency),
+                        (string)row[5]));
+                }
             }
             else if (ordersTabItem.IsSelected)
             {
@@ -256,7 +257,7 @@ namespace Biggs_Customs_Finance_Interface
             {
                 AllProjects.Clear();
 
-                var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Projects!A2:J");
+                var request = sheets_service.Spreadsheets.Values.Get(sheets_id, "Projects!A2:K");
                 var values = (await request.ExecuteAsync()).Values;
 
                 foreach (var row in values)
@@ -272,7 +273,8 @@ namespace Biggs_Customs_Finance_Interface
                         CustomerFirstName = (string)row[6],
                         CustomerLastName = (string)row[7],
                         PhoneNumber = (string)row[8],
-                        Instagram = (string)row[9]
+                        Instagram = (string)row[9],
+                        ThumbnailLocation = (string)row[10]
                     });
                 }
 
@@ -290,9 +292,12 @@ namespace Biggs_Customs_Finance_Interface
                 projectsPhoneNumberTextbox.Text = project.PhoneNumber;
                 projectsInstagramTextbox.Text = project.Instagram;
                 projectsProductCombobox.SelectedItem = project.Product;
+                projectsCustomerCustomCostTextbox.Text = project.CustomCost.ToString();
                 projectsStartDateDatePicker.Text = project.StartDate.ToShortDateString();
                 projectsEndDateDatePicker.Text = project.EndDate.ToShortDateString();
                 projectsCustomerOrderNumberTextbox.Text = project.OrderNumber.ToString();
+                projectsCustomerPayingProductCheckBox.IsChecked = project.TotalIncome == project.CustomCost;
+                projectsThumbnailLocationTextbox.Text = project.ThumbnailLocation;
             } else
             {
                 projectsCustomerFirstNameTextbox.Text = "";
@@ -300,17 +305,21 @@ namespace Biggs_Customs_Finance_Interface
                 projectsPhoneNumberTextbox.Text = "";
                 projectsInstagramTextbox.Text = "";
                 projectsProductCombobox.Text = "";
+                projectsCustomerCustomCostTextbox.Text = "0.00";
                 projectsStartDateDatePicker.Text = "";
                 projectsEndDateDatePicker.Text = "";
                 projectsCustomerOrderNumberTextbox.Text = (AllProjects[AllProjects.Count - 1].OrderNumber + 1).ToString();
+                projectsThumbnailLocationTextbox.Text = "";
             }
         }
 
-        private void projectsAddUpdateButton_Click(object sender, RoutedEventArgs e)
+        private async void projectsAddUpdateButton_Click(object sender, RoutedEventArgs e)
         {
             var product = (Product)projectsProductCombobox.SelectedItem;
             var customCost = decimal.Parse(projectsCustomerCustomCostTextbox.Text, NumberStyles.Currency);
             var index = allProjectsListView.SelectedIndex;
+            var values = new List<IList<object>>();
+
             var project = new Project
             {
                 Product = product,
@@ -318,26 +327,217 @@ namespace Biggs_Customs_Finance_Interface
                 StartDate = projectsStartDateDatePicker.SelectedDate ?? DateTime.Now,
                 EndDate = projectsEndDateDatePicker.SelectedDate ?? DateTime.Now,
                 CustomCost = customCost,
-                TotalIncome = product.Cost + customCost,
+                TotalIncome = (projectsCustomerPayingProductCheckBox.IsChecked ?? false) ? customCost : customCost + product.Cost,
                 CustomerFirstName = projectsCustomerFirstNameTextbox.Text,
                 CustomerLastName = projectsCustomerLastNameTextbox.Text,
                 PhoneNumber = projectsPhoneNumberTextbox.Text,
-                Instagram = projectsInstagramTextbox.Text
+                Instagram = projectsInstagramTextbox.Text,
+                ThumbnailLocation = projectsThumbnailLocationTextbox.Text
             };
+
+            values.Add(new List<object> {
+                project.Product.SKU,
+                project.OrderNumber,
+                project.StartDate.ToString("dd MMM yyyy"),
+                project.EndDate.ToString("dd MMM yyyy"),
+                project.CustomCost,
+                project.TotalIncome,
+                project.CustomerFirstName,
+                project.CustomerLastName,
+                project.PhoneNumber,
+                project.Instagram,
+                project.ThumbnailLocation
+            });
+
+            var body = new ValueRange()
+            {
+                Values = values
+            };
+
             if (index > -1)
             {
                 AllProjects[index] = project;
                 allProjectsListView.SelectedIndex = index;
-            } else
+
+                var request = sheets_service.Spreadsheets.Values.Update(body, sheets_id, $"Projects!A{index + 2}:K");
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.USERENTERED;
+                await request.ExecuteAsync();
+            }
+            else
             {
                 AllProjects.Add(project);
                 allProjectsListView.SelectedIndex = AllProjects.Count - 1;
+
+                var request = sheets_service.Spreadsheets.Values.Append(body, sheets_id, "Projects");
+                request.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+                request.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+                await request.ExecuteAsync();
+            }
+            
+        }
+
+        private async void projectsCompletedButton_Click(object sender, RoutedEventArgs e)
+        {
+            var product = (Product)projectsProductCombobox.SelectedItem;
+            var customCost = decimal.Parse(projectsCustomerCustomCostTextbox.Text, NumberStyles.Currency);
+            var index = allProjectsListView.SelectedIndex;
+            var values = new List<IList<object>>();
+
+            var order = new Order
+            {
+                OrderNumber = int.Parse(projectsCustomerOrderNumberTextbox.Text),
+                SKU = product.SKU,
+                StartDate = projectsStartDateDatePicker.SelectedDate ?? DateTime.Now,
+                EndDate = projectsEndDateDatePicker.SelectedDate ?? DateTime.Now,
+                SellingDate = DateTime.Now,
+                CustomCost = customCost,
+                TotalIncome = (projectsCustomerPayingProductCheckBox.IsChecked ?? false) ? customCost : customCost + product.Cost,
+                CustomerFirstName = projectsCustomerFirstNameTextbox.Text,
+                CustomerLastName = projectsCustomerLastNameTextbox.Text,
+                PhoneNumber = projectsPhoneNumberTextbox.Text,
+                Instagram = projectsInstagramTextbox.Text,
+            };
+
+            AllOrders.Add(order);
+
+            values.Add(new List<object> {
+                order.OrderNumber,
+                order.SKU,
+                order.StartDate.ToString("dd MMM yyyy"),
+                order.EndDate.ToString("dd MMM yyyy"),
+                order.SellingDate.ToString("dd MMM yyyy"),
+                order.CustomCost,
+                order.TotalIncome,
+                order.CustomerFirstName,
+                order.CustomerLastName,
+                order.PhoneNumber,
+                order.Instagram
+            });
+
+            var body = new ValueRange()
+            {
+                Values = values
+            };
+
+            var appendRequest = sheets_service.Spreadsheets.Values.Append(body, sheets_id, "Orders");
+            appendRequest.InsertDataOption = SpreadsheetsResource.ValuesResource.AppendRequest.InsertDataOptionEnum.INSERTROWS;
+            appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+            await appendRequest.ExecuteAsync();
+
+            Request RequestBody = new Request()
+            {
+                DeleteDimension = new DeleteDimensionRequest()
+                {
+                    Range = new DimensionRange()
+                    {
+                        SheetId = projects_id,
+                        Dimension = "ROWS",
+                        StartIndex = index + 1,
+                        EndIndex = index + 2
+                    }
+                }
+            };
+
+            List<Request> RequestContainer = new List<Request>
+            {
+                RequestBody
+            };
+
+            BatchUpdateSpreadsheetRequest DeleteRequest = new BatchUpdateSpreadsheetRequest
+            {
+                Requests = RequestContainer
+            };
+
+            SpreadsheetsResource.BatchUpdateRequest Deletion = new SpreadsheetsResource.BatchUpdateRequest(sheets_service, DeleteRequest, sheets_id);
+            await Deletion.ExecuteAsync();
+
+            AllProjects.RemoveAt(index);
+        }
+
+        private void projectsAddImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var ofd = new OpenFileDialog { Title = "Select thumbnail", CheckFileExists = true, AddExtension = true };
+            if (ofd.ShowDialog() == true)
+            {
+                projectsThumbnailLocationTextbox.Text = ofd.FileName;
             }
         }
 
-        private void projectsCompletedButton_Click(object sender, RoutedEventArgs e)
+        private void allProjectsListView_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
+            DependencyObject source = e.OriginalSource as DependencyObject;
+            if (source == null) return;
 
+            FrameworkElement selectedItem = ItemsControl.ContainerFromElement((ItemsControl)sender, source) as FrameworkElement;
+            if (selectedItem == null) return;
+
+            var projectsViewThumbnailMenuItem = new MenuItem { Header = "View Thumbnail" };
+            projectsViewThumbnailMenuItem.Click += (s, args) => {
+                var thumbnail = new Thumbnail(((Project)allProjectsListView.SelectedItem).ThumbnailLocation);
+                thumbnail.ShowDialog();
+            };
+
+            var cm = new ContextMenu();
+            cm.Items.Add(projectsViewThumbnailMenuItem);
+            selectedItem.ContextMenu = cm; 
+        }
+
+        private void allOrdersListView_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            DependencyObject source = e.OriginalSource as DependencyObject;
+            if (source == null) return;
+
+            FrameworkElement selectedItem = ItemsControl.ContainerFromElement((ItemsControl)sender, source) as FrameworkElement;
+            if (selectedItem == null) return;
+
+            var ordersGenerateInvoiceMenuItem = new MenuItem { Header = "Generate Invoice" };
+            ordersGenerateInvoiceMenuItem.Click += (s, args) => {
+                var order = (Order)allOrdersListView.SelectedItem;
+                var sfd = new SaveFileDialog
+                {
+                    Title = "Save PDF To",
+                    AddExtension = true,
+                    DefaultExt = ".pdf",
+                    FileName = $"invoice {order.OrderNumber} - {order.CustomerFirstName} {order.CustomerLastName}",
+                };
+                if (sfd.ShowDialog() == true)
+                {
+                    string invoice_file = @"Assets\invoice.json";
+                    string json = File.ReadAllText(invoice_file);
+                    json = Regex.Replace(json, @"{customer_first} {customer_last}", $"{order.CustomerFirstName} {order.CustomerLastName}");
+                    json = Regex.Replace(json, @"{order_number}", order.OrderNumber.ToString());
+                    json = Regex.Replace(json, @"{selling_date}", order.SellingDate.ToString("dd MMM yyyy"));
+                    json = Regex.Replace(json, @"{product_sku}", order.SKU.ToString());
+                    json = Regex.Replace(json, @"{product_name}", AllProducts.First(x => x.SKU == order.SKU).Name);
+                    json = Regex.Replace(json, @"{total_income}", order.TotalIncome.ToString());
+                    json = Regex.Replace(json, @"{tax}", (order.TotalIncome * 0.075m).ToString());
+
+                    var request = (HttpWebRequest)WebRequest.Create("https://invoice-generator.com");
+                    request.Method = "POST";
+
+                    System.Text.UTF8Encoding encoding = new System.Text.UTF8Encoding();
+                    var byteArray = encoding.GetBytes(json);
+
+                    request.ContentLength = byteArray.Length;
+                    request.ContentType = @"application/json";
+
+                    using (Stream dataStream = request.GetRequestStream())
+                    {
+                        dataStream.Write(byteArray, 0, byteArray.Length);
+                    }
+
+                    using (Stream output = File.OpenWrite(sfd.FileName))
+                    using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                    using (Stream input = response.GetResponseStream())
+                    {
+                        input.CopyTo(output);
+                    }
+                }
+            };
+
+            var cm = new ContextMenu();
+            cm.Items.Add(ordersGenerateInvoiceMenuItem);
+            selectedItem.ContextMenu = cm;
         }
     }
 }
